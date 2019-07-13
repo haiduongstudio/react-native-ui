@@ -8,13 +8,21 @@ import Welcome from '../screens/Welcome';
 import Login from '../screens/Login';
 import SignUp from '../screens/SignUp';
 import Forgot from '../screens/Forgot';
+import Browse from '../screens/Browse';
+import Settings from '../screens/Settings';
+import Explore from '../screens/Explore';
+import Product from '../screens/Product';
 
 const screens = createStackNavigator(
   {
     Welcome,
     Login,
     SignUp,
-    Forgot
+    Forgot,
+    Browse,
+    Settings,
+    Explore,
+    Product
   },
   {
     defaultNavigationOptions: {
