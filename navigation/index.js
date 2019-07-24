@@ -9,8 +9,8 @@ import Trip from '../screens/Trip';
 
 const screens = createStackNavigator(
   {
-    Welcome,
-    Rewards,
+    // Welcome,
+    // Rewards,
     Trip
   },
   {

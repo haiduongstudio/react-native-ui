@@ -1,8 +1,21 @@
 import React, { Component } from 'react';
-import { StyleSheet, Image, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  Dimensions,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView
+} from 'react-native';
+import { LinearGradient } from 'expo';
+import rgba from 'hex-to-rgba';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 import { Block, Text, Badge, Card } from '../components';
+import { styles as blockStyles } from '../components/Block';
+import { styles as cardStyles } from '../components/Block';
 import { theme, mocks } from '../constants';
+
+const { width } = Dimensions.get('window');
 
 export default class Welcome extends Component {
   static navigationOptions = {
@@ -33,7 +46,10 @@ export default class Welcome extends Component {
         activeOpacity={0.8}
         onPress={() => navigation.navigate('Rewards')}
       >
-        <Card shadow style={{ paddingVertical: theme.sizes.padding, elevation: 1 }}>
+        <Card
+          shadow
+          style={{ paddingVertical: theme.sizes.padding, elevation: 1 }}
+        >
           <Image
             resizeMode="contain"
             source={require('../assets/images/Icon/More.png')}
@@ -98,18 +114,119 @@ export default class Welcome extends Component {
 
   renderAwards() {
     return (
-      <Card>
-        <Text>Awards</Text>
+      <LinearGradient
+        end={{ x: 1, y: 0 }}
+        style={[blockStyles.row, cardStyles.card, styles.awards]}
+        colors={['#FF988A', theme.colors.accent]}
+      >
+        <Block middle flex={0.4}>
+          <Badge color={rgba(theme.colors.white, '0.2')} size={74}>
+            <Badge color={rgba(theme.colors.white, '0.2')} size={52}>
+              <Icon name="trophy" color="white" size={theme.sizes.h2} />
+            </Badge>
+          </Badge>
+        </Block>
+        <Block middle>
+          <Text size={theme.sizes.base} spacing={0.4} medium white>
+            Wohoo!
+          </Text>
+          <Text size={theme.sizes.base} spacing={0.4} medium white>
+            Safe Driver Trophy!
+          </Text>
+        </Block>
+      </LinearGradient>
+    );
+  }
+
+  renderTrip = trip => {
+    return (
+      <Card key={`trip-${trip.id}`} shadow style={{ elevation: 1 }}>
+        <Block row space="between" style={{ marginBottom: theme.sizes.base }}>
+          <Text spacing={0.5} caption>
+            {trip.date}
+          </Text>
+          <Text spacing={0.5} caption medium primary>
+            {trip.score}
+          </Text>
+          <Text spacing={0.5} caption>
+            {trip.distance}
+          </Text>
+        </Block>
+        <Block row center>
+          <Badge
+            color={rgba(theme.colors.accent, '0.2')}
+            size={14}
+            style={{ marginRight: 8 }}
+          >
+            <Badge color={theme.colors.accent} size={8} />
+          </Badge>
+          <Text spacing={0.5} color="gray">
+            {trip.from}
+          </Text>
+        </Block>
+
+        <Block row center style={{ paddingVertical: 4 }}>
+          <Badge color="gray2" size={4} style={{ marginLeft: 4.5 }} />
+        </Block>
+
+        <Block row center>
+          <Badge
+            color={rgba(theme.colors.primary, '0.2')}
+            size={14}
+            style={{ marginRight: 8 }}
+          >
+            <Badge color={theme.colors.primary} size={8} />
+          </Badge>
+          <Text spacing={0.5} color="gray">
+            {trip.to}
+          </Text>
+        </Block>
       </Card>
-    )
+    );
+  };
+
+  renderTrips() {
+    return (
+      <React.Fragment>
+        <Block style={{ marginBottom: theme.sizes.base }}>
+          <Text spacing={0.4} transform="uppercase">
+            Recent Trips
+          </Text>
+        </Block>
+        {mocks.trips.map(trip => this.renderTrip(trip))}
+      </React.Fragment>
+    );
+  }
+
+  renderTripButton() {
+    const { navigation } = this.props;
+
+    return (
+      <Block center middle style={styles.startTrip}>
+        <Badge color={rgba(theme.colors.primary, '0.1')} size={144}>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            onPress={() => navigation.navigate('Trip')}
+          >
+            <Badge color={theme.colors.primary} size={62}>
+              <Icon name="automobile" size={62 / 2} color="white" />
+            </Badge>
+          </TouchableOpacity>
+        </Badge>
+      </Block>
+    );
   }
 
   render() {
     return (
-      <ScrollView style={styles.welcome}>
-        {this.renderMonthly()}
-        {this.renderAwards()}
-      </ScrollView>
+      <React.Fragment>
+        <ScrollView style={styles.welcome} showsVerticalScrollIndicator={false}>
+          {this.renderMonthly()}
+          {this.renderAwards()}
+          {this.renderTrips()}
+        </ScrollView>
+        {this.renderTripButton()}
+      </React.Fragment>
     );
   }
 }
@@ -131,11 +248,20 @@ const styles = StyleSheet.create({
     marginVertical: theme.sizes.base / 2,
     width: 1
   },
+  awards: {
+    padding: theme.sizes.padding,
+    marginBottom: theme.sizes.base
+  },
   moreIcon: {
     width: theme.sizes.base,
     height: theme.sizes.base,
     position: 'absolute',
     right: theme.sizes.base,
     top: theme.sizes.base
+  },
+  startTrip: {
+    position: 'absolute',
+    left: (width - 144) / 2,
+    bottom: 0
   }
 });
